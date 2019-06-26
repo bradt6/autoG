@@ -1,12 +1,10 @@
 import scrapy
 from ..items import AutogramItem
-import sys
-from selenium import webdriver
-import time
+
 
 class PicSpider(scrapy.Spider):
     name = "doit"
-    categoery = "beach"
+    categoery = "watch"
     hashableWord = "".join(categoery.split())
     start_urls = ['https://www.pexels.com/search/{}/?page=1'.format(categoery)]
     page_index = 1
@@ -21,26 +19,24 @@ class PicSpider(scrapy.Spider):
             url='http://best-hashtags.com/hashtag/{}/'.format(PicSpider.hashableWord), callback=self.parse_2)
         yield request
 
-
     def parse(self, response):
 
         do_not_inclue = ["women", "man", "person", "men", "couple", "lady", "people", "girl", "boy",
-                        "girl", "boys", "girls", "baby", "babies", "child", "children", "woman"]
-
+                         "girl", "boys", "girls", "baby", "babies", "child", "children", "woman"]
 
         items = AutogramItem()
-        
+
         files = response.css(".photo-item__img")
         if files:
             for item in files:
                 name = item.xpath("@alt").extract()
 
-                name_to_lower = [word.lower() for  word in name]
+                name_to_lower = [word.lower() for word in name]
                 comapre = name_to_lower[0]
                 compare_split = comapre.split()
                 result = any(word_check in compare_split for word_check in do_not_inclue)
 
-                if  result:
+                if result:
                     continue
                 else:
                     imageURL = item.xpath("@data-big-src").extract()
@@ -51,21 +47,19 @@ class PicSpider(scrapy.Spider):
                     print(items)
                     print("##################################")
                     yield items
-        else:   
+        else:
             return
 
         PicSpider.page_index += 1
         if PicSpider.page_index:
             yield scrapy.Request(url="https://www.pexels.com/search/{}/?page={}".format(PicSpider.categoery, PicSpider.page_index), callback=self.parse)
 
-    def parse_2 (self, response):
+    def parse_2(self, response):
         tags = response.css(".progression a::text").extract()
         PicSpider.pic_tags = tags
         yield scrapy.Request(url=PicSpider.start_urls[0], callback=self.parse)
-    
-    
 
-    # SELENIUM AUTO SCROLL TO BOTTOM OF PAGE 
+    # SELENIUM AUTO SCROLL TO BOTTOM OF PAGE
 
         # self.driver.get(response.url)
 

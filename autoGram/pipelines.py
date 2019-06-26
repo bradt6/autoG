@@ -11,6 +11,8 @@
 
 import pymongo
 from scrapy.exceptions import DropItem
+
+
 class AutogramPipeline(object):
 
     # def __init__(self):
@@ -20,40 +22,20 @@ class AutogramPipeline(object):
     #     self.Session = sessionmaker(bind = engine)
 
     def __init__(self):
-        self.url_seen = set()
-        # self.conn = pymongo.MongoClient(
-        #     'localhost', 
-        #     27017
-        # )
-        
-        # db = self.conn['photos']
-        # self.collection = db['image_items']
+        # self.url_seen = set()
+        self.conn = pymongo.MongoClient(
+            'localhost',
+            27017
+        )
 
+        db = self.conn['photos']
+        self.collection = db['watch_test_duplicates']
 
     def process_item(self, item, spider):
-        # if self.collection.find({dict(item)['imageURL'][0]}).limit(1):
-        #     pass
-        # if item['imageURL'][0] in self.url_seen:
-        #     # raise DropItem("DUPLICATE FOUND: %s" % item)
-        #     pass
-        # else:
-        #     self.url_seen.add(item['imageURL'][0])
-
-
-        # # self.collection.insert(dict(item))
+        dup_check = self.collection.find({'imageURL': item['imageURL']}).count()
+        if dup_check == 0:
+            self.collection.insert(dict(item))
+            print("image Added!")
+        else:
+            print("Image Exist")
         return item
-        # session = self.Session()
-        # photos = Photos(**item)
-        # tags = Tags(**item)
-
-        # try:
-        #     session.add(photos)
-        #     session.add(tags)
-        #     session.commit()
-        # except:
-        #     session.rollback()
-        #     raise
-        # finally:
-        #     session.close()
-
-        # return item
