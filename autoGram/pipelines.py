@@ -21,25 +21,27 @@ class AutogramPipeline(object):
 
     def __init__(self):
         self.url_seen = set()
-        self.conn = pymongo.MongoClient(
-            'localhost', 
-            27017
-        )
-
-        db = self.conn['photos']
-        self.collection = db['image_items']
+        # self.conn = pymongo.MongoClient(
+        #     'localhost', 
+        #     27017
+        # )
+        
+        # db = self.conn['photos']
+        # self.collection = db['image_items']
 
 
     def process_item(self, item, spider):
-        # if self.collection.find({dict(item)['imageURL']}).limit(1):
+        # if self.collection.find({dict(item)['imageURL'][0]}).limit(1):
         #     pass
-        if item['imageURL'] in self.url_seen:
-            raise DropItem("DUPLICATE FOUND: %s" % item)
-        else:
-            self.url_seen.add(item['imageURL'])
-            self.collection.insert(dict(item))
-            return item
+        # if item['imageURL'][0] in self.url_seen:
+        #     # raise DropItem("DUPLICATE FOUND: %s" % item)
+        #     pass
+        # else:
+        #     self.url_seen.add(item['imageURL'][0])
 
+
+        # # self.collection.insert(dict(item))
+        return item
         # session = self.Session()
         # photos = Photos(**item)
         # tags = Tags(**item)
