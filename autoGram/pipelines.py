@@ -29,7 +29,7 @@ class AutogramPipeline(object):
         )
 
         db = self.conn['photos']
-        self.collection = db['watch_test_duplicates']
+        self.collection = db['beach']
 
     def process_item(self, item, spider):
         dup_check = self.collection.find({'imageURL': item['imageURL']}).count()

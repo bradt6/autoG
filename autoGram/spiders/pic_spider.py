@@ -4,7 +4,7 @@ from ..items import AutogramItem
 
 class PicSpider(scrapy.Spider):
     name = "doit"
-    categoery = "watch"
+    categoery = "beach"
     hashableWord = "".join(categoery.split())
     start_urls = ['https://www.pexels.com/search/{}/?page=1'.format(categoery)]
     page_index = 1
